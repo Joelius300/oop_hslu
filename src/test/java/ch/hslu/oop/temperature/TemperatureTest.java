@@ -4,6 +4,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/*
+Unit-Tests for Temperature as a replacement for implementing Calculator. If Calculator will be needed in the future,
+I can still implement it.
+ */
 class TemperatureTest {
     private static final float BOILING_KELVIN = 373.15f;
     private static final float BOILING_CELSIUS = 100f;

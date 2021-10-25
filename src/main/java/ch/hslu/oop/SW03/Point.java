@@ -11,6 +11,11 @@ public final class Point {
         this.y = y;
     }
 
+    public Point(Point other) {
+        x = other.getX();
+        y = other.getY();
+    }
+
     public int getX() {
         return x;
     }
@@ -36,6 +41,15 @@ public final class Point {
                 return Quadrant.LOWER_LEFT;
             }
         }
+    }
+
+    // Since Point should be immutable, we return a new point instead of mutating the current instance.
+    public Point moveRelative(int x, int y) {
+        return new Point(getX() + x, getY() + y);
+    }
+
+    public Point moveRelative(Point vec) {
+        return moveRelative(vec.getX(), vec.getY());
     }
 
     public enum Quadrant {
