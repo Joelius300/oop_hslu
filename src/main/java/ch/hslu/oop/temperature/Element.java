@@ -1,6 +1,8 @@
 package ch.hslu.oop.temperature;
 
-public class Element {
+import java.util.Objects;
+
+public final class Element {
     private final String symbol;
     private final Temperature meltingPoint;
     private final Temperature boilingPoint;
@@ -49,5 +51,24 @@ public class Element {
         Solid,
         Liquid,
         Gas
+    }
+
+    /* Since I implemented Element immutable and final instead
+     * of creating subclasses for each element, this equals implementation
+     * is "normal". If I had chosen the other way, I wouldn't be able to use
+     * instanceof! Because with those, the identity is _only_ determined by
+     * the type of the object. There you'd have an identity check and then a
+     * getClass check. That's all the identity of such an Element would be made of.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Element element)) return false;
+        return symbol.equals(element.symbol);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(symbol);
     }
 }
