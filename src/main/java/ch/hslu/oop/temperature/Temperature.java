@@ -149,8 +149,12 @@ public final class Temperature implements Comparable<Temperature> {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Temperature that = (Temperature) o;
+        // Since Temperature is final, using instanceof should act the same as using getClass.
+        // In general, instanceof is preferred by some people (e.g. EqualsVerifier: https://jqno.nl/equalsverifier/manual/instanceof-or-getclass/)
+        // because of the Liskov substitution principle so if B is a subclass of A, it can
+        // be used in place of A and it still works. However, accepting subtypes usually results
+        // in noncompliance with the contract (see IntelliJ generation dialog).
+        if (!(o instanceof Temperature that)) return false;
         return Float.compare(that.getKelvin(), getKelvin()) == 0;
     }
 

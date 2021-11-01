@@ -1,5 +1,6 @@
 package ch.hslu.oop.temperature;
 
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -244,5 +245,13 @@ class TemperatureTest {
                 () -> assertThrows(IllegalArgumentException.class, () -> Temperature.fromCelsius(belowZeroCelsius)),
                 () -> assertThrows(IllegalArgumentException.class, () -> Temperature.fromFahrenheit(belowZeroFahrenheit))
         );
+    }
+
+    @Test
+    void temperaturesEqualsContract() {
+        // Using simple because Temperature is implemented mutable so
+        // the strict checking would error because it uses a mutable field
+        // in the equals implementation.
+        EqualsVerifier.simple().forClass(Temperature.class).verify();
     }
 }

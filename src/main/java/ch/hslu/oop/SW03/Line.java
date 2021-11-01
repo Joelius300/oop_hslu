@@ -42,8 +42,8 @@ public final class Line {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Line line = (Line) o;
+        // Since Line is final, using instanceof should act the same as using getClass.
+        if (!(o instanceof Line line)) return false;
         return start.equals(line.start) && end.equals(line.end);
     }
 

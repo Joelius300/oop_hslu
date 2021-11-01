@@ -1,5 +1,7 @@
 package ch.hslu.oop.SW03;
 
+import ch.hslu.oop.temperature.Temperature;
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -82,5 +84,10 @@ class PointTest {
 
         // Assert
         assertThrows(PointLiesOnAxisException.class, point::getQuadrant);
+    }
+
+    @Test
+    void pointEqualsContract() {
+        EqualsVerifier.forClass(Point.class).verify();
     }
 }

@@ -62,8 +62,8 @@ public final class Point {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Point point = (Point) o;
+        // Since Point is final, using instanceof should act the same as using getClass.
+        if (!(o instanceof Point point)) return false;
         return x == point.x && y == point.y;
     }
 
