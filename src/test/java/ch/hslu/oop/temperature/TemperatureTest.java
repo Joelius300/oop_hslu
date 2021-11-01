@@ -233,6 +233,45 @@ class TemperatureTest {
     }
 
     @Test
+    void compareToLessThan() {
+        // Arrange
+        Temperature a = Temperature.fromKelvin(9);
+        Temperature b = Temperature.fromKelvin(10);
+
+        // Act
+        int actual = a.compareTo(b);
+
+        // Assert
+        assertTrue(actual < 0);
+    }
+
+    @Test
+    void compareToGreaterThan() {
+        // Arrange
+        Temperature a = Temperature.fromFahrenheit(100);
+        Temperature b = Temperature.fromFahrenheit(50);
+
+        // Act
+        int actual = a.compareTo(b);
+
+        // Assert
+        assertTrue(actual > 0);
+    }
+
+    @Test
+    void compareToEqual() {
+        // Arrange
+        Temperature a = Temperature.fromKelvin(0);
+        Temperature b = Temperature.fromKelvin(0);
+
+        // Act
+        int actual = a.compareTo(b);
+
+        // Assert
+        assertEquals(0, actual);
+    }
+
+    @Test
     void belowAbsoluteZeroThrowsIllegalArgument() {
         // Arrange
         final float belowZeroKelvin = -0.1f;

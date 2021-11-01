@@ -71,4 +71,6 @@ public final class Point {
     public int hashCode() {
         return Objects.hash(x, y);
     }
+
+    // In my opinion there's no natural order for 2d points, so I'm not implementing Comparable
 }

@@ -71,4 +71,7 @@ public final class Element {
     public int hashCode() {
         return Objects.hash(symbol);
     }
+
+    // For element the natural sorting would probably be the position in the periodic table
+    // but since that's not stored currently, there's no natural order -> no Comparable implementation
 }

@@ -163,6 +163,7 @@ public final class Temperature implements Comparable<Temperature> {
         return Objects.hash(getKelvin());
     }
 
+    // Temperatures are basically just numbers with fixed semantics so they have the same natural order as the underlying number
     @Override
     public int compareTo(Temperature o) {
         return Float.compare(this.getKelvin(), o.getKelvin());
