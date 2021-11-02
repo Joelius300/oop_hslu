@@ -75,11 +75,22 @@ public class Person implements Comparable<Person> {
     // randomly generated and assigned so sorting
     // by the id doesn't make sense.
     // Next most "natural" order would be the name but,
-    // I think putting this logic into Person itself isn't great.
+    // I think putting this logic into Person itself isn't great for multiple reasons.
+    // - It isn't consistent with the equals method (which is strongly recommended by the
+    //   Comparable interface).
+    // - The string comparison is locale-insensitive.
+
+    /**
+     * Compares this person to the other person using the lastname then the firstname.
+     * This comparison is case- and locale-insensitive!
+     * BEWARE: This implementation isn't consistent with equals.
+     * @param o The Person to compare to.
+     * @return A negative value if this instance is less than the specified Person.
+     * A positive value if this instance is greater than the specified Person.
+     * 0 if this instance is in the same place in the natural sorting order as the specified Person (NOT EQUAL TO).
+     */
     @Override
     public int compareTo(Person o) {
-        // One of the reasons this logic shouldn't go in here is the
-        // lack of localization which could be implemented in a Comparator.
         final String thisName = getLastName() + getFirstName();
         final String thatName = o.getLastName() + o.getFirstName();
 
