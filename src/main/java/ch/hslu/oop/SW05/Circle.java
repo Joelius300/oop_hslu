@@ -1,6 +1,6 @@
 package ch.hslu.oop.SW05;
 
-public final class Circle extends Shape {
+public final class  Circle extends Shape {
     private int diameter;
 
     public Circle(int x, int y, int diameter) {

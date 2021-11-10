@@ -6,7 +6,7 @@ import java.util.Locale;
 
 /**
  * A Comparator for comparing a {@link Person} to another by their
- * last- and then firstname. You can/must specify the locale used
+ * last- and then firstname. You must specify the locale used
  * for the comparison. If you want locale-insensitive comparison, use
  * {@link Locale#ROOT}. You may also specify that the comparison should
  * be case-insensitive which will capitalize the names before comparing them.

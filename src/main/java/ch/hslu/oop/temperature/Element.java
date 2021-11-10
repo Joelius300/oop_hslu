@@ -39,18 +39,27 @@ public final class Element {
             throw new IllegalArgumentException("Temperature cannot be null.");
 
         if (temperature.compareTo(meltingPoint) < 0) // temperature < meltingPoint scheiss java
-            return Phase.Solid;
+            return Phase.SOLID;
 
         if (temperature.compareTo(boilingPoint) > 0) // temperature > boilingPoint
-            return Phase.Gas;
+            return Phase.GAS;
 
-        return Phase.Liquid;
+        return Phase.LIQUID;
     }
 
     public enum Phase {
-        Solid,
-        Liquid,
-        Gas
+        SOLID,
+        LIQUID,
+        GAS;
+
+        @Override
+        public String toString() {
+            return switch (this) {
+                case SOLID -> "fest";
+                case LIQUID -> "flüssig";
+                case GAS -> "gasförmig";
+            };
+        }
     }
 
     /* Since I implemented Element immutable and final instead

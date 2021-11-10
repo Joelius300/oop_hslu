@@ -17,7 +17,7 @@ public abstract class Shape {
         return y;
     }
 
-    public void move(final int newX, final int newY) {
+    public final void move(final int newX, final int newY) {
         x = newX;
         y = newY;
     }

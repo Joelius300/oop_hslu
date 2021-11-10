@@ -9,6 +9,10 @@ public final class Temperature implements Comparable<Temperature> {
         setKelvin(kelvin);
     }
 
+    public Temperature(Temperature temperature) {
+        this(temperature.rawKelvinValue);
+    }
+
     public float getKelvin() {
         return rawKelvinValue;
     }
@@ -167,5 +171,10 @@ public final class Temperature implements Comparable<Temperature> {
     @Override
     public int compareTo(Temperature o) {
         return Float.compare(this.getKelvin(), o.getKelvin());
+    }
+
+    @Override
+    public String toString() {
+        return "Temperature {" + rawKelvinValue + " K}";
     }
 }
