@@ -52,12 +52,18 @@ public final class Element {
         LIQUID,
         GAS;
 
+        public static final String SOLID_STRING_DE = "fest";
+        public static final String LIQUID_STRING_DE = "flüssig";
+        public static final String GAS_STRING_DE = "gasförmig";
+
+        // I'm not sure if this is a good idea because we cannot override valueOf
+        // and I'd imagine these should be in sync right?
         @Override
         public String toString() {
             return switch (this) {
-                case SOLID -> "fest";
-                case LIQUID -> "flüssig";
-                case GAS -> "gasförmig";
+                case SOLID -> SOLID_STRING_DE;
+                case LIQUID -> LIQUID_STRING_DE;
+                case GAS -> GAS_STRING_DE;
             };
         }
     }
