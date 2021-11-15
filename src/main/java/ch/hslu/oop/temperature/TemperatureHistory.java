@@ -36,13 +36,13 @@ public class TemperatureHistory {
         if (backingList.isEmpty())
             return null;
 
-        return new Temperature(Collections.min(backingList));
+        return Collections.min(backingList);
     }
 
     public Temperature getMaximum() {
         if (backingList.isEmpty())
             return null;
 
-        return new Temperature(Collections.max(backingList));
+        return Collections.max(backingList);
     }
 }

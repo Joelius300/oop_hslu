@@ -3,10 +3,10 @@ package ch.hslu.oop.temperature;
 import java.util.Objects;
 
 public final class Temperature implements Comparable<Temperature> {
-    private float rawKelvinValue;
+    private final float rawKelvinValue;
 
     private Temperature(float kelvin) {
-        setKelvin(kelvin);
+        rawKelvinValue = guardValidTemperatureKelvin(kelvin);
     }
 
     public Temperature(Temperature temperature) {
@@ -25,78 +25,16 @@ public final class Temperature implements Comparable<Temperature> {
         return kelvinToFahrenheit(rawKelvinValue);
     }
 
-    public void setKelvin(float kelvin) {
-        rawKelvinValue = guardValidTemperatureKelvin(kelvin);
+    public Temperature updateKelvin(float kelvinRelative) {
+        return Temperature.fromKelvin(getKelvin() + kelvinRelative);
     }
 
-    public void setCelsius(float celsius) {
-        setKelvin(celsiusToKelvin(celsius));
+    public Temperature updateCelsius(float celsiusRelative) {
+        return Temperature.fromCelsius(getCelsius() + celsiusRelative);
     }
 
-    public void setFahrenheit(float fahrenheit) {
-        setKelvin(fahrenheitToKelvin(fahrenheit));
-    }
-
-    public float updateKelvin(float kelvinRelative) {
-        setKelvin(getKelvin() + kelvinRelative);
-        
-        return getKelvin();
-    }
-
-    public float updateCelsius(float celsiusRelative) {
-        setCelsius(getCelsius() + celsiusRelative);
-
-        return getCelsius();
-    }
-
-    public float updateFahrenheit(float fahrenheitRelative) {
-        setFahrenheit(getFahrenheit() + fahrenheitRelative);
-
-        return getFahrenheit();
-    }
-
-    public String getPhase(String element) {
-        /* Possible improvements:
-            - Use enums instead of magic strings
-            - Use lookup table/dictionary instead of switch
-            - Don't have a method like this at all since it doesn't make sense this way around..
-              It would be so much more logical to me to have an element class with a
-              "getPhaseAt(Temperature temperature)" method. It makes sense to know for
-              an element when it melts and when it boils but it doesn't make sense at all
-              to know for a temperature when every element there is melts and boils, it's
-              not its responsibility.
-              If Java supported it you could also do an extension method on Temperature
-              which takes an Element and gets the corresponding phase.
-         */
-        float meltingPoint;
-        float boilingPoint;
-
-        switch (element) {
-            case "N" -> {
-                meltingPoint = 63.05f;
-                boilingPoint = 77.15f;
-            }
-            case "Hg" -> {
-                meltingPoint = 234.32f;
-                boilingPoint = 630.2f;
-            }
-            case "Pb" -> {
-                meltingPoint = 600.61f;
-                boilingPoint = 2017;
-            }
-            default -> throw new IllegalArgumentException(element + "isn't one of the allowed elements.");
-        }
-
-        float temp = getKelvin();
-        if (temp < meltingPoint) {
-            return "solid";
-        }
-
-        if (temp > boilingPoint) {
-            return "gas";
-        }
-
-        return "liquid";
+    public Temperature updateFahrenheit(float fahrenheitRelative) {
+        return Temperature.fromFahrenheit(getFahrenheit() + fahrenheitRelative);
     }
 
     private static float guardValidTemperatureKelvin(float kelvin) {

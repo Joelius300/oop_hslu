@@ -93,53 +93,16 @@ class TemperatureTest {
     }
 
     @Test
-    void setKelvin() {
-        // Arrange
-        final Temperature temp = Temperature.fromKelvin(0);
-
-        // Act
-        temp.setKelvin(BOILING_KELVIN);
-
-        // Assert
-        assertEquals(BOILING_KELVIN, temp.getKelvin());
-    }
-
-    @Test
-    void setCelsius() {
-        // Arrange
-        final Temperature temp = Temperature.fromKelvin(0);
-
-        // Act
-        temp.setCelsius(BOILING_CELSIUS);
-
-        // Assert
-        assertEquals(BOILING_KELVIN, temp.getKelvin());
-    }
-
-    @Test
-    void setFahrenheit() {
-        // Arrange
-        final Temperature temp = Temperature.fromKelvin(0);
-
-        // Act
-        temp.setFahrenheit(BOILING_FAHRENHEIT);
-
-        // Assert
-        assertEquals(BOILING_KELVIN, temp.getKelvin());
-    }
-
-    @Test
     void updateKelvin() {
         // Arrange
         final Temperature temp = Temperature.fromKelvin(BOILING_KELVIN);
         final float difference = 5;
 
         // Act
-        final float newValue = temp.updateKelvin(difference);
+        final Temperature newValue = temp.updateKelvin(difference);
 
         // Assert
-        assertEquals(BOILING_KELVIN + difference, newValue);
-        assertEquals(newValue, temp.getKelvin());
+        assertEquals(Temperature.fromKelvin(BOILING_KELVIN + difference), newValue);
     }
 
     @Test
@@ -149,11 +112,10 @@ class TemperatureTest {
         final float difference = 5;
 
         // Act
-        final float newValue = temp.updateCelsius(difference);
+        final Temperature newValue = temp.updateCelsius(difference);
 
         // Assert
-        assertEquals(BOILING_CELSIUS + difference, newValue);
-        assertEquals(newValue, temp.getCelsius());
+        assertEquals(Temperature.fromCelsius(BOILING_CELSIUS + difference), newValue);
     }
 
     @Test
@@ -163,11 +125,10 @@ class TemperatureTest {
         final float difference = 5;
 
         // Act
-        final float newValue = temp.updateFahrenheit(difference);
+        final Temperature newValue = temp.updateFahrenheit(difference);
 
         // Assert
-        assertEquals(BOILING_FAHRENHEIT + difference, newValue, 0.01);
-        assertEquals(newValue, temp.getFahrenheit());
+        assertEquals(Temperature.fromFahrenheit(BOILING_FAHRENHEIT + difference), newValue);
     }
 
     @Test
@@ -288,9 +249,6 @@ class TemperatureTest {
 
     @Test
     void temperaturesEqualsContract() {
-        // Using simple because Temperature is implemented mutable so
-        // the strict checking would error because it uses a mutable field
-        // in the equals implementation.
-        EqualsVerifier.simple().forClass(Temperature.class).verify();
+        EqualsVerifier.forClass(Temperature.class).verify();
     }
 }
