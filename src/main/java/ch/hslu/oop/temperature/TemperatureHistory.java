@@ -1,6 +1,7 @@
 package ch.hslu.oop.temperature;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TemperatureHistory {
     private final Collection<Temperature> backingList;
@@ -22,14 +23,13 @@ public class TemperatureHistory {
     }
 
     public Temperature getAverage() {
-        OptionalDouble temp = backingList.stream()
-                .mapToDouble(Temperature::getKelvin)
-                .average();
-
-        if (temp.isEmpty())
+        if (backingList.isEmpty())
             return null;
 
-        return Temperature.fromKelvin((float)temp.getAsDouble());
+        return Temperature.fromKelvin((float)backingList.stream()
+                .mapToDouble(Temperature::getKelvin)
+                .average()
+                .orElseThrow());
     }
 
     public Temperature getMinimum() {
