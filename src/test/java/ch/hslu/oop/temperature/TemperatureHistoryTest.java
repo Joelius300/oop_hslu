@@ -3,6 +3,7 @@ package ch.hslu.oop.temperature;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+import org.mockito.Mockito;
 
 class TemperatureHistoryTest {
     @Test
@@ -15,6 +16,15 @@ class TemperatureHistoryTest {
 
         // Assert
         assertEquals(1, history.getCount());
+    }
+
+    @Test
+    void cannotAddNull() {
+        // Arrange
+        TemperatureHistory history = new TemperatureHistory();
+
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> history.add(null));
     }
 
     @Test
@@ -134,4 +144,161 @@ class TemperatureHistoryTest {
         // Assert
         assertEquals(Temperature.fromKelvin(200), history.getMaximum());
     }
+
+    @Test
+    void raiseMaximumExtremumEventForEmptyHistory() {
+        // Arrange
+        TemperatureHistory history = new TemperatureHistory();
+        TemperatureExtremumEventListener listener = Mockito.mock(TemperatureExtremumEventListener.class);
+        history.addExtremumEventListener(listener);
+
+        // Act
+        history.add(Temperature.fromKelvin(100));
+
+        // Assert
+        Mockito.verify(listener).newExtremumReached(new TemperatureExtremumEvent(history,
+                TemperatureExtremumEvent.ExtremumType.MAXIMUM,
+                Temperature.fromKelvin(100),
+                null));
+    }
+
+    @Test
+    void raiseMinimumExtremumEventForEmptyHistory() {
+        // Arrange
+        TemperatureHistory history = new TemperatureHistory();
+        TemperatureExtremumEventListener listener = Mockito.mock(TemperatureExtremumEventListener.class);
+        history.addExtremumEventListener(listener);
+
+        // Act
+        history.add(Temperature.fromKelvin(100));
+
+        // Assert
+        Mockito.verify(listener).newExtremumReached(new TemperatureExtremumEvent(history,
+                TemperatureExtremumEvent.ExtremumType.MINIMUM,
+                Temperature.fromKelvin(100),
+                null));
+    }
+
+    @Test
+    void raiseMaximumExtremumEventForNewMaximum() {
+        // Arrange
+        TemperatureHistory history = new TemperatureHistory();
+        history.add(Temperature.fromKelvin(200));
+        history.add(Temperature.fromKelvin(300));
+        history.add(Temperature.fromKelvin(400));
+        TemperatureExtremumEventListener listener = Mockito.mock(TemperatureExtremumEventListener.class);
+        history.addExtremumEventListener(listener);
+
+        // Act
+        history.add(Temperature.fromKelvin(500));
+
+        // Assert
+        Mockito.verify(listener).newExtremumReached(new TemperatureExtremumEvent(history,
+                TemperatureExtremumEvent.ExtremumType.MAXIMUM,
+                Temperature.fromKelvin(500),
+                Temperature.fromKelvin(400)));
+    }
+
+    @Test
+    void raiseMinimumExtremumEventForNewMinimum() {
+        // Arrange
+        TemperatureHistory history = new TemperatureHistory();
+        history.add(Temperature.fromKelvin(400));
+        history.add(Temperature.fromKelvin(300));
+        history.add(Temperature.fromKelvin(200));
+        TemperatureExtremumEventListener listener = Mockito.mock(TemperatureExtremumEventListener.class);
+        history.addExtremumEventListener(listener);
+
+        // Act
+        history.add(Temperature.fromKelvin(100));
+
+        // Assert
+        Mockito.verify(listener).newExtremumReached(new TemperatureExtremumEvent(history,
+                TemperatureExtremumEvent.ExtremumType.MINIMUM,
+                Temperature.fromKelvin(100),
+                Temperature.fromKelvin(200)));
+    }
+
+    @Test
+    void raisesEventsForConsecutiveNewExtrema() {
+        // Arrange
+        TemperatureHistory history = new TemperatureHistory();
+        TemperatureExtremumEventListener listener = Mockito.mock(TemperatureExtremumEventListener.class);
+        history.addExtremumEventListener(listener);
+
+        // Act
+        history.add(Temperature.fromKelvin(200)); // max & min -> 2
+        history.add(Temperature.fromKelvin(300)); // max -> 3
+        history.add(Temperature.fromKelvin(400)); // max -> 4
+        history.add(Temperature.fromKelvin(250)); // nothing -> 4
+        history.add(Temperature.fromKelvin(100)); // min -> 5
+        history.add(Temperature.fromKelvin(0)); // min -> 6
+
+        // Assert
+        Mockito.verify(listener, Mockito.times(6)).newExtremumReached(Mockito.any());
+    }
+
+    @Test
+    void dontRaiseEventForNonExtremum() {
+        // Arrange
+        TemperatureHistory history = new TemperatureHistory();
+        history.add(Temperature.fromKelvin(100));
+        history.add(Temperature.fromKelvin(1000));
+        TemperatureExtremumEventListener listener = Mockito.mock(TemperatureExtremumEventListener.class);
+        history.addExtremumEventListener(listener);
+
+        // Act
+        history.add(Temperature.fromKelvin(500));
+
+        // Assert
+        Mockito.verify(listener, Mockito.never()).newExtremumReached(Mockito.any());
+    }
+
+    @Test
+    void dontRaiseEventForSameValue() {
+        // Arrange
+        TemperatureHistory history = new TemperatureHistory();
+        history.add(Temperature.fromKelvin(500));
+        TemperatureExtremumEventListener listener = Mockito.mock(TemperatureExtremumEventListener.class);
+        history.addExtremumEventListener(listener);
+
+        // Act
+        history.add(Temperature.fromKelvin(500));
+
+        // Assert
+        Mockito.verify(listener, Mockito.never()).newExtremumReached(Mockito.any());
+    }
+
+    @Test
+    void canRemoveListener() {
+        // Arrange
+        TemperatureHistory history = new TemperatureHistory();
+        history.add(Temperature.fromKelvin(100));
+        TemperatureExtremumEventListener listener = Mockito.mock(TemperatureExtremumEventListener.class);
+        history.addExtremumEventListener(listener);
+
+        // Act
+        history.add(Temperature.fromKelvin(500)); // max -> 1
+        history.removeExtremumEventListener(listener);
+        history.add(Temperature.fromKelvin(1000));
+
+        // Assert
+        Mockito.verify(listener, Mockito.atMostOnce()).newExtremumReached(Mockito.any());
+    }
+
+    @Test
+    void cannotAddNullListener() {
+        // Arrange
+        TemperatureHistory history = new TemperatureHistory();
+
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> history.addExtremumEventListener(null));
+    }
+
+    /* Things that technically aren't tested but I'm unsure if they need to be:
+     * - Multiple listeners
+     * - Same listener added multiple times
+     * - Remove null listeners, but it's tested that null listeners can't ever enter
+     * - What happens on clear? Currently only non-null extrema ar reported so I don't think it should raise
+     */
 }
