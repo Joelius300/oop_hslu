@@ -5,10 +5,10 @@ import java.util.Objects;
 
 public final class TemperatureExtremumEvent extends EventObject {
     private final ExtremumType type;
-    private final Temperature newExtremum;
-    private final Temperature previousExtremum;
+    private final TemperatureRecord newExtremum;
+    private final TemperatureRecord previousExtremum;
 
-    public TemperatureExtremumEvent(Object source, ExtremumType type, Temperature newExtremum, Temperature previousExtremum) {
+    public TemperatureExtremumEvent(Object source, ExtremumType type, TemperatureRecord newExtremum, TemperatureRecord previousExtremum) {
         super(source);
 
         if (type == null)
@@ -26,11 +26,11 @@ public final class TemperatureExtremumEvent extends EventObject {
         return type;
     }
 
-    public Temperature getNewExtremum() {
+    public TemperatureRecord getNewExtremum() {
         return newExtremum;
     }
 
-    public Temperature getPreviousExtremum() {
+    public TemperatureRecord getPreviousExtremum() {
         return previousExtremum;
     }
 
