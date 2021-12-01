@@ -5,14 +5,18 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.mockito.Mockito;
 
+import java.time.LocalDateTime;
+
 class TemperatureHistoryTest {
+    private final LocalDateTime IRRELEVANT_DATETIME = LocalDateTime.MIN;
+
     @Test
     void addUpdatesCount() {
         // Arrange
         TemperatureHistory history = new TemperatureHistory();
 
         // Act
-        history.add(Temperature.fromKelvin(0));
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(0)));
 
         // Assert
         assertEquals(1, history.getCount());
@@ -33,7 +37,7 @@ class TemperatureHistoryTest {
         TemperatureHistory history = new TemperatureHistory();
 
         // Act
-        history.add(Temperature.fromKelvin(0));
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(0)));
         history.clear();
 
         // Assert
@@ -73,7 +77,7 @@ class TemperatureHistoryTest {
         TemperatureHistory history = new TemperatureHistory();
 
         // Act
-        history.add(Temperature.fromKelvin(100));
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(100)));
 
         // Assert
         assertEquals(Temperature.fromKelvin(100), history.getAverage());
@@ -85,10 +89,10 @@ class TemperatureHistoryTest {
         TemperatureHistory history = new TemperatureHistory();
 
         // Act
-        history.add(Temperature.fromKelvin(100));
+        history.add(new TemperatureRecord(LocalDateTime.of(2000, 1,1,4,20), Temperature.fromKelvin(100)));
 
         // Assert
-        assertEquals(Temperature.fromKelvin(100), history.getMinimum());
+        assertEquals(new TemperatureRecord(LocalDateTime.of(2000, 1,1,4,20), Temperature.fromKelvin(100)), history.getMinimum());
     }
 
     @Test
@@ -97,10 +101,10 @@ class TemperatureHistoryTest {
         TemperatureHistory history = new TemperatureHistory();
 
         // Act
-        history.add(Temperature.fromKelvin(100));
+        history.add(new TemperatureRecord(LocalDateTime.of(2000, 1,1,4,20), Temperature.fromKelvin(100)));
 
         // Assert
-        assertEquals(Temperature.fromKelvin(100), history.getMaximum());
+        assertEquals(new TemperatureRecord(LocalDateTime.of(2000, 1,1,4,20), Temperature.fromKelvin(100)), history.getMaximum());
     }
 
     @Test
@@ -109,9 +113,9 @@ class TemperatureHistoryTest {
         TemperatureHistory history = new TemperatureHistory();
 
         // Act
-        history.add(Temperature.fromKelvin(75));
-        history.add(Temperature.fromKelvin(100));
-        history.add(Temperature.fromKelvin(200));
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(75)));
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(100)));
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(200)));
 
         // Assert
         assertEquals(Temperature.fromKelvin(125), history.getAverage());
@@ -123,12 +127,12 @@ class TemperatureHistoryTest {
         TemperatureHistory history = new TemperatureHistory();
 
         // Act
-        history.add(Temperature.fromKelvin(75));
-        history.add(Temperature.fromKelvin(100));
-        history.add(Temperature.fromKelvin(200));
+        history.add(new TemperatureRecord(LocalDateTime.of(2000, 1,1,4,20), Temperature.fromKelvin(75)));
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(100)));
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(200)));
 
         // Assert
-        assertEquals(Temperature.fromKelvin(75), history.getMinimum());
+        assertEquals(new TemperatureRecord(LocalDateTime.of(2000, 1,1,4,20), Temperature.fromKelvin(75)), history.getMinimum());
     }
 
     @Test
