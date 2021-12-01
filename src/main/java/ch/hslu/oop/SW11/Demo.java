@@ -18,12 +18,12 @@ public class Demo {
             return;
         }
 
-        NetatmoCsvReader csvReader = new NetatmoCsvReader();
-        try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(csvStream, StandardCharsets.UTF_8))) {
-            TemperatureHistory history = csvReader.parseStream(fileReader)
+        try (NetatmoCsvReader csvReader = new NetatmoCsvReader(new BufferedReader(new InputStreamReader(csvStream, StandardCharsets.UTF_8)))) {
+            TemperatureHistory history = csvReader.parseStream()
                     //.parallel() see below why this doesn't make sense. I'm learning so much today :)
                     .map(Demo::convertToTemperatureRecord)
-                    // .collect(Collectors.toList()) then one-by-one add to history but that would be lame :)
+                    // .collect(Collectors.toList()) would get you a list, then you can one-by-one add to history but that would be lame :)
+                    // .forEach(history::add) this would work too, and I think as long as the csvReaders stream can't be parallelized, it's just as good as the collector below
                     .collect(Collector.of(TemperatureHistory::new, TemperatureHistory::add,
                             // this would be used if the collecting is done in batches so parallel but
                             // AFAIK this won't happen because the stream I return in parseStream isn't parallel.
