@@ -2,9 +2,11 @@ package ch.hslu.oop.SW10;
 
 import ch.hslu.oop.temperature.Temperature;
 import ch.hslu.oop.temperature.TemperatureHistory;
+import ch.hslu.oop.temperature.TemperatureRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.time.LocalDateTime;
 import java.util.Scanner;
 
 public class Demo {
@@ -41,7 +43,7 @@ public class Demo {
 
             System.out.println(temp);
 
-            history.add(temp);
+            history.add(new TemperatureRecord(LocalDateTime.now(), temp));
         }
 
         System.out.println(history);

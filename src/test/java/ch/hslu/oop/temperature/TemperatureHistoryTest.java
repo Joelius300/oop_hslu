@@ -5,14 +5,18 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.mockito.Mockito;
 
+import java.time.LocalDateTime;
+
 class TemperatureHistoryTest {
+    private final LocalDateTime IRRELEVANT_DATETIME = LocalDateTime.MIN;
+
     @Test
     void addUpdatesCount() {
         // Arrange
         TemperatureHistory history = new TemperatureHistory();
 
         // Act
-        history.add(Temperature.fromKelvin(0));
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(0)));
 
         // Assert
         assertEquals(1, history.getCount());
@@ -33,7 +37,7 @@ class TemperatureHistoryTest {
         TemperatureHistory history = new TemperatureHistory();
 
         // Act
-        history.add(Temperature.fromKelvin(0));
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(0)));
         history.clear();
 
         // Assert
@@ -73,7 +77,7 @@ class TemperatureHistoryTest {
         TemperatureHistory history = new TemperatureHistory();
 
         // Act
-        history.add(Temperature.fromKelvin(100));
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(100)));
 
         // Assert
         assertEquals(Temperature.fromKelvin(100), history.getAverage());
@@ -85,10 +89,10 @@ class TemperatureHistoryTest {
         TemperatureHistory history = new TemperatureHistory();
 
         // Act
-        history.add(Temperature.fromKelvin(100));
+        history.add(new TemperatureRecord(LocalDateTime.of(2000, 1,1,4,20), Temperature.fromKelvin(100)));
 
         // Assert
-        assertEquals(Temperature.fromKelvin(100), history.getMinimum());
+        assertEquals(new TemperatureRecord(LocalDateTime.of(2000, 1,1,4,20), Temperature.fromKelvin(100)), history.getMinimum());
     }
 
     @Test
@@ -97,10 +101,10 @@ class TemperatureHistoryTest {
         TemperatureHistory history = new TemperatureHistory();
 
         // Act
-        history.add(Temperature.fromKelvin(100));
+        history.add(new TemperatureRecord(LocalDateTime.of(2000, 1,1,4,20), Temperature.fromKelvin(100)));
 
         // Assert
-        assertEquals(Temperature.fromKelvin(100), history.getMaximum());
+        assertEquals(new TemperatureRecord(LocalDateTime.of(2000, 1,1,4,20), Temperature.fromKelvin(100)), history.getMaximum());
     }
 
     @Test
@@ -109,9 +113,9 @@ class TemperatureHistoryTest {
         TemperatureHistory history = new TemperatureHistory();
 
         // Act
-        history.add(Temperature.fromKelvin(75));
-        history.add(Temperature.fromKelvin(100));
-        history.add(Temperature.fromKelvin(200));
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(75)));
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(100)));
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(200)));
 
         // Assert
         assertEquals(Temperature.fromKelvin(125), history.getAverage());
@@ -123,12 +127,12 @@ class TemperatureHistoryTest {
         TemperatureHistory history = new TemperatureHistory();
 
         // Act
-        history.add(Temperature.fromKelvin(75));
-        history.add(Temperature.fromKelvin(100));
-        history.add(Temperature.fromKelvin(200));
+        history.add(new TemperatureRecord(LocalDateTime.of(2000, 1,1,4,20), Temperature.fromKelvin(75)));
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(100)));
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(200)));
 
         // Assert
-        assertEquals(Temperature.fromKelvin(75), history.getMinimum());
+        assertEquals(new TemperatureRecord(LocalDateTime.of(2000, 1,1,4,20), Temperature.fromKelvin(75)), history.getMinimum());
     }
 
     @Test
@@ -137,12 +141,12 @@ class TemperatureHistoryTest {
         TemperatureHistory history = new TemperatureHistory();
 
         // Act
-        history.add(Temperature.fromKelvin(75));
-        history.add(Temperature.fromKelvin(100));
-        history.add(Temperature.fromKelvin(200));
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(75)));
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(100)));
+        history.add(new TemperatureRecord(LocalDateTime.of(2000, 1,1,4,20), Temperature.fromKelvin(200)));
 
         // Assert
-        assertEquals(Temperature.fromKelvin(200), history.getMaximum());
+        assertEquals(new TemperatureRecord(LocalDateTime.of(2000, 1,1,4,20), Temperature.fromKelvin(200)), history.getMaximum());
     }
 
     @Test
@@ -153,12 +157,12 @@ class TemperatureHistoryTest {
         history.addExtremumEventListener(listener);
 
         // Act
-        history.add(Temperature.fromKelvin(100));
+        history.add(new TemperatureRecord(LocalDateTime.of(2000, 1,1,4,20), Temperature.fromKelvin(100)));
 
         // Assert
         Mockito.verify(listener).newExtremumReached(new TemperatureExtremumEvent(history,
                 TemperatureExtremumEvent.ExtremumType.MAXIMUM,
-                Temperature.fromKelvin(100),
+                new TemperatureRecord(LocalDateTime.of(2000, 1,1,4,20), Temperature.fromKelvin(100)),
                 null));
     }
 
@@ -170,12 +174,12 @@ class TemperatureHistoryTest {
         history.addExtremumEventListener(listener);
 
         // Act
-        history.add(Temperature.fromKelvin(100));
+        history.add(new TemperatureRecord(LocalDateTime.of(2000, 1,1,4,20), Temperature.fromKelvin(100)));
 
         // Assert
         Mockito.verify(listener).newExtremumReached(new TemperatureExtremumEvent(history,
                 TemperatureExtremumEvent.ExtremumType.MINIMUM,
-                Temperature.fromKelvin(100),
+                new TemperatureRecord(LocalDateTime.of(2000, 1,1,4,20), Temperature.fromKelvin(100)),
                 null));
     }
 
@@ -183,40 +187,40 @@ class TemperatureHistoryTest {
     void raiseMaximumExtremumEventForNewMaximum() {
         // Arrange
         TemperatureHistory history = new TemperatureHistory();
-        history.add(Temperature.fromKelvin(200));
-        history.add(Temperature.fromKelvin(300));
-        history.add(Temperature.fromKelvin(400));
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(200)));
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(300)));
+        history.add(new TemperatureRecord(LocalDateTime.of(5000, 1,1,4,20), Temperature.fromKelvin(400)));
         TemperatureExtremumEventListener listener = Mockito.mock(TemperatureExtremumEventListener.class);
         history.addExtremumEventListener(listener);
 
         // Act
-        history.add(Temperature.fromKelvin(500));
+        history.add(new TemperatureRecord(LocalDateTime.of(2000, 1,1,4,20), Temperature.fromKelvin(500)));
 
         // Assert
         Mockito.verify(listener).newExtremumReached(new TemperatureExtremumEvent(history,
                 TemperatureExtremumEvent.ExtremumType.MAXIMUM,
-                Temperature.fromKelvin(500),
-                Temperature.fromKelvin(400)));
+                new TemperatureRecord(LocalDateTime.of(2000, 1,1,4,20), Temperature.fromKelvin(500)),
+                new TemperatureRecord(LocalDateTime.of(5000, 1,1,4,20), Temperature.fromKelvin(400))));
     }
 
     @Test
     void raiseMinimumExtremumEventForNewMinimum() {
         // Arrange
         TemperatureHistory history = new TemperatureHistory();
-        history.add(Temperature.fromKelvin(400));
-        history.add(Temperature.fromKelvin(300));
-        history.add(Temperature.fromKelvin(200));
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(400)));
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(300)));
+        history.add(new TemperatureRecord(LocalDateTime.of(5000, 1,1,4,20), Temperature.fromKelvin(200)));
         TemperatureExtremumEventListener listener = Mockito.mock(TemperatureExtremumEventListener.class);
         history.addExtremumEventListener(listener);
 
         // Act
-        history.add(Temperature.fromKelvin(100));
+        history.add(new TemperatureRecord(LocalDateTime.of(2000, 1,1,4,20), Temperature.fromKelvin(100)));
 
         // Assert
         Mockito.verify(listener).newExtremumReached(new TemperatureExtremumEvent(history,
                 TemperatureExtremumEvent.ExtremumType.MINIMUM,
-                Temperature.fromKelvin(100),
-                Temperature.fromKelvin(200)));
+                new TemperatureRecord(LocalDateTime.of(2000, 1,1,4,20), Temperature.fromKelvin(100)),
+                new TemperatureRecord(LocalDateTime.of(5000, 1,1,4,20), Temperature.fromKelvin(200))));
     }
 
     @Test
@@ -227,12 +231,12 @@ class TemperatureHistoryTest {
         history.addExtremumEventListener(listener);
 
         // Act
-        history.add(Temperature.fromKelvin(200)); // max & min -> 2
-        history.add(Temperature.fromKelvin(300)); // max -> 3
-        history.add(Temperature.fromKelvin(400)); // max -> 4
-        history.add(Temperature.fromKelvin(250)); // nothing -> 4
-        history.add(Temperature.fromKelvin(100)); // min -> 5
-        history.add(Temperature.fromKelvin(0)); // min -> 6
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(200))); // max & min -> 2
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(300))); // max -> 3
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(400))); // max -> 4
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(250))); // nothing -> 4
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(100))); // min -> 5
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(0))); // min -> 6
 
         // Assert
         Mockito.verify(listener, Mockito.times(6)).newExtremumReached(Mockito.any());
@@ -242,13 +246,13 @@ class TemperatureHistoryTest {
     void dontRaiseEventForNonExtremum() {
         // Arrange
         TemperatureHistory history = new TemperatureHistory();
-        history.add(Temperature.fromKelvin(100));
-        history.add(Temperature.fromKelvin(1000));
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(100)));
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(1000)));
         TemperatureExtremumEventListener listener = Mockito.mock(TemperatureExtremumEventListener.class);
         history.addExtremumEventListener(listener);
 
         // Act
-        history.add(Temperature.fromKelvin(500));
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(500)));
 
         // Assert
         Mockito.verify(listener, Mockito.never()).newExtremumReached(Mockito.any());
@@ -258,12 +262,12 @@ class TemperatureHistoryTest {
     void dontRaiseEventForSameValue() {
         // Arrange
         TemperatureHistory history = new TemperatureHistory();
-        history.add(Temperature.fromKelvin(500));
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(500)));
         TemperatureExtremumEventListener listener = Mockito.mock(TemperatureExtremumEventListener.class);
         history.addExtremumEventListener(listener);
 
         // Act
-        history.add(Temperature.fromKelvin(500));
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(500)));
 
         // Assert
         Mockito.verify(listener, Mockito.never()).newExtremumReached(Mockito.any());
@@ -273,14 +277,14 @@ class TemperatureHistoryTest {
     void canRemoveListener() {
         // Arrange
         TemperatureHistory history = new TemperatureHistory();
-        history.add(Temperature.fromKelvin(100));
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(100)));
         TemperatureExtremumEventListener listener = Mockito.mock(TemperatureExtremumEventListener.class);
         history.addExtremumEventListener(listener);
 
         // Act
-        history.add(Temperature.fromKelvin(500)); // max -> 1
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(500))); // max -> 1
         history.removeExtremumEventListener(listener);
-        history.add(Temperature.fromKelvin(1000));
+        history.add(new TemperatureRecord(IRRELEVANT_DATETIME, Temperature.fromKelvin(1000)));
 
         // Assert
         Mockito.verify(listener, Mockito.atMostOnce()).newExtremumReached(Mockito.any());
